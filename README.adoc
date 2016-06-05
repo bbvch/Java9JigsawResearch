@@ -62,7 +62,7 @@ You define so called _slices_ where each of them consists of a set of classes. T
 
 The output is precise, i.e. it prints the dependencies that violate the rules and if you need to analyze it more precisely it writes a `graphml` file that can be viewed with `yEd`.
 
-A disadvantage is that its libraries bring some dependencies which will be in the test dependencies.
+A disadvantage is that its libraries bring some dependencies which will be in the test dependencies. We implemented a workaround using Gradle's source sets. Now the dependency test is separated from the other tests.
 
 ==== Classycle
 
@@ -76,6 +76,18 @@ A disadvantage is that its libraries bring some dependencies which will be in th
 You can define modules, let it check for access and cycles. But:
 
 IMPORTANT: Fails on Java 8 Lambdas
+
+There is now an updated version:
+
+[cols="s,5"]
+|========
+|URL         | https://bitbucket.org/rostislav_matl/classycle
+|Last update | Mai 2016
+|License     | something self written
+|========
+
+This version now supports Java 8.
+
 
 === Sample: moduledemo
 The `moduledemo` sample contains these three subprojects:
@@ -110,12 +122,9 @@ At the moment there are the following task that you can run to do some checks:
 | classycleReport | Runs the classycle checks and creates a report in `classycleRepot/classycle.xml`. You have to open it in a browser that can handle XSLT stuff (i.e. Firefox)
 | jdependText     | Runs JDepend and writes the result to the console
 | jdependUI       | Runs JDepend and opens the UI with the result
+| depTest         | Runs the degraph dependency test. This is also done automatically if you call the `test` task (see `build.gradle`).
 |========
 
 To run the task on a single project you can execute:
 
- ./gradlew -x test layer:classycleCheck
-
-****
-The `-x test` is necessary because the degraph unit test fails of course.
-****
+ ./gradlew layer:classycleCheck
