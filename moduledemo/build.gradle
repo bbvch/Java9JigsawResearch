@@ -30,7 +30,7 @@ subprojects {
         compile 'com.google.inject:guice:4.0'
         testCompile 'junit:junit:4.11'
         depTestCompile 'de.schauderhaft.degraph:degraph-check:0.1.2'
-        classycle 'org.specs2:classycle:1.4.3'
+        classycle 'org.bithill:classycle:1.4.4'
         jdepend 'jdepend:jdepend:2.9.1'
     }
 
@@ -44,25 +44,25 @@ subprojects {
         dependsOn depTest
     }
 
-    task classycleReport(type: JavaExec, dependsOn: 'build') {
+    task classycleReport(type: JavaExec, dependsOn: 'compileJava') {
         classpath = configurations.classycle
         main = 'classycle.Analyser'
         args '-xmlFile=classycleReport/classycle.xml', '-title=CarWash', 'build/classes/main'
     }
 
-    task classycleCheck(type: JavaExec, dependsOn: 'build') {
+    task classycleCheck(type: JavaExec, dependsOn: 'compileJava') {
         classpath = configurations.classycle
         main = 'classycle.dependency.DependencyChecker'
         args '-dependencies=@../classycle-conf.ddf', 'build/classes/main'
     }
 
-    task jdependUI(type: JavaExec, dependsOn: 'build') {
+    task jdependUI(type: JavaExec, dependsOn: 'compileJava') {
         classpath = configurations.jdepend
         main = 'jdepend.swingui.JDepend'
         args 'build/classes/main'
     }
 
-    task jdependText(type: JavaExec, dependsOn: 'build') {
+    task jdependText(type: JavaExec, dependsOn: 'compileJava') {
         classpath = configurations.jdepend
         main = 'jdepend.textui.JDepend'
         args 'build/classes/main'
