@@ -11,7 +11,7 @@ import static org.junit.Assert.assertThat;
 public class DegraphCheck {
 
   @Test
-  public void checkForCycles() {
+  public void checkStructure() {
     ConstraintBuilder parts = classpath() //
         .including("ch.bbv.moduledemo.**") //
         .noJars() //

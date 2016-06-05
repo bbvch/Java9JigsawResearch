@@ -1,67 +1,70 @@
 subprojects {
-	group 'ch.bbv'
-	version '1.0-SNAPSHOT'
+    group 'ch.bbv'
+    version '1.0-SNAPSHOT'
 
-	apply plugin: 'java'
+    apply plugin: 'java'
 
-	sourceCompatibility = 1.8
+    sourceCompatibility = 1.8
 
-	repositories {
-	    mavenCentral()
-	}
+    repositories {
+        mavenCentral()
+    }
 
-	sourceSets {
-		depTest {
-			java {
-				compileClasspath += main.output
-				runtimeClasspath += main.output
-			}
-		}
-	}
+    sourceSets {
+        depTest {
+            java {
+                compileClasspath += main.output
+                runtimeClasspath += main.output
+            }
+        }
+    }
 
-	configurations {
-	    classycle
-	    jdepend
-		depTestCompile.extendsFrom testCompile
-		depTestRuntime.extendsFrom testRuntime
-	}
+    configurations {
+        classycle
+        jdepend
+        depTestCompile.extendsFrom testCompile
+        depTestRuntime.extendsFrom testRuntime
+    }
 
-	dependencies {
-	    compile 'com.google.inject:guice:4.0'
-	    testCompile 'junit:junit:4.11'
-		depTestCompile('de.schauderhaft.degraph:degraph-check:0.1.2')
-		//depTestCompile 'junit:junit:4.11'
-	    classycle 'org.specs2:classycle:1.4.3'
-	    jdepend 'jdepend:jdepend:2.9.1'
-	}
+    dependencies {
+        compile 'com.google.inject:guice:4.0'
+        testCompile 'junit:junit:4.11'
+        depTestCompile 'de.schauderhaft.degraph:degraph-check:0.1.2'
+        classycle 'org.specs2:classycle:1.4.3'
+        jdepend 'jdepend:jdepend:2.9.1'
+    }
 
-	task depTest(type:Test){
-		description = "Run dependencies tests (located in src/depTest/...)."
-		testClassesDir = project.sourceSets.depTest.output.classesDir
-		classpath = project.sourceSets.depTest.runtimeClasspath
-	}
+    task depTest(type: Test) {
+        description = "Run dependencies tests (located in src/depTest/...)."
+        testClassesDir = project.sourceSets.depTest.output.classesDir
+        classpath = project.sourceSets.depTest.runtimeClasspath
+    }
 
-	task classycleReport(type: JavaExec, dependsOn: 'build') {
-	    classpath = configurations.classycle
-	    main = 'classycle.Analyser'
-	    args '-xmlFile=classycleReport/classycle.xml', '-title=CarWash', 'build/classes/main'
-	}
+    test {
+        dependsOn depTest
+    }
 
-	task classycleCheck(type: JavaExec, dependsOn: 'build') {
-	    classpath = configurations.classycle
-	    main = 'classycle.dependency.DependencyChecker'
-	    args '-dependencies=@../classycle-conf.ddf', 'build/classes/main'
-	}
+    task classycleReport(type: JavaExec, dependsOn: 'build') {
+        classpath = configurations.classycle
+        main = 'classycle.Analyser'
+        args '-xmlFile=classycleReport/classycle.xml', '-title=CarWash', 'build/classes/main'
+    }
 
-	task jdependUI(type: JavaExec, dependsOn: 'build') {
-	    classpath = configurations.jdepend
-	    main = 'jdepend.swingui.JDepend'
-	    args 'build/classes/main'
-	}
+    task classycleCheck(type: JavaExec, dependsOn: 'build') {
+        classpath = configurations.classycle
+        main = 'classycle.dependency.DependencyChecker'
+        args '-dependencies=@../classycle-conf.ddf', 'build/classes/main'
+    }
 
-	task jdependText(type: JavaExec, dependsOn: 'build') {
-	    classpath = configurations.jdepend
-	    main = 'jdepend.textui.JDepend'
-	    args 'build/classes/main'
-	}
+    task jdependUI(type: JavaExec, dependsOn: 'build') {
+        classpath = configurations.jdepend
+        main = 'jdepend.swingui.JDepend'
+        args 'build/classes/main'
+    }
+
+    task jdependText(type: JavaExec, dependsOn: 'build') {
+        classpath = configurations.jdepend
+        main = 'jdepend.textui.JDepend'
+        args 'build/classes/main'
+    }
 }
